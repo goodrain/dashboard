@@ -111,7 +111,7 @@ export class NamespaceSelectorComponent implements OnInit, OnDestroy {
   onNamespaceToggle(opened: boolean): void {
     if (opened) {
       this.namespaceUpdate_.next();
-      this.focusNamespaceInput_();
+      // this.focusNamespaceInput_();
     } else {
       this.changeNamespace_(this.selectedNamespace);
     }

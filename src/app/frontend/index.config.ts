@@ -30,7 +30,7 @@ export const CONFIG: Config = {
   authTokenHeaderName: 'jweToken',
   csrfHeaderName: 'X-CSRF-TOKEN',
   skipLoginPageCookieName: 'skipLoginPage',
-  defaultNamespace: 'default',
+  defaultNamespace: 'rbd-system',
 };
 
 // Override default material tooltip values.

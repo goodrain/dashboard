@@ -12,21 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/switchMap';
-
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {CookieService} from 'ngx-cookie-service';
 import {of} from 'rxjs';
+import 'rxjs/add/operator/first';
+import 'rxjs/add/operator/switchMap';
 import {Observable} from 'rxjs/Observable';
 import {first, switchMap} from 'rxjs/operators';
 import {AuthResponse, CsrfToken, LoginSpec, LoginStatus} from 'typings/backendapi';
-
 import {CONFIG} from '../../../index.config';
 import {K8SError} from '../../errors/errors';
-
 import {CsrfTokenService} from './csrftoken';
 import {KdStateService} from './state';
 
@@ -62,17 +59,17 @@ export class AuthService {
       return;
     }
 
-    if (this.isCurrentDomainSecure_()) {
-      this.cookies_.set(
-        this._config.authTokenCookieName,
-        token,
-        null,
-        null,
-        location.hostname,
-        false,
-        'Strict',
-      );
-    }
+    //if (this.isCurrentDomainSecure_()) {
+    this.cookies_.set(
+      this._config.authTokenCookieName,
+      token,
+      null,
+      null,
+      location.hostname,
+      false,
+      'Strict',
+    );
+    //}
   }
 
   private getTokenCookie_(): string {
@@ -197,6 +194,7 @@ export class AuthService {
    * protocol is HTTPS, false otherwise.
    */
   isLoginEnabled(): boolean {
-    return this.isCurrentDomainSecure_() || this.isCurrentProtocolSecure_();
+    return true;
+    // return this.isCurrentDomainSecure_() || this.isCurrentProtocolSecure_();
   }
 }

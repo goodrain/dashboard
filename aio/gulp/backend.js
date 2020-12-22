@@ -18,7 +18,6 @@
 import gulp from 'gulp';
 import lodash from 'lodash';
 import path from 'path';
-
 import conf from './conf';
 import goCommand from './gocommand';
 
@@ -26,8 +25,10 @@ import goCommand from './gocommand';
  * Compiles backend application in development mode and places the binary in the serve
  * directory.
  */
-gulp.task('backend', gulp.series((doneFn) => {
-  goCommand(
+gulp.task(
+  'backend',
+  gulp.series(doneFn => {
+    goCommand(
       [
         'build',
         // Install dependencies to speed up subsequent compilations.
@@ -41,8 +42,15 @@ gulp.task('backend', gulp.series((doneFn) => {
         path.join(conf.paths.serve, conf.backend.binaryName),
         conf.backend.mainPackageName,
       ],
-      doneFn);
-}));
+      doneFn,
+      {
+        // Disable cgo package. Required to run on scratch docker image.
+        CGO_ENABLED: '0',
+        GOOS: 'linux',
+      },
+    );
+  }),
+);
 
 /**
  * Compiles backend application in production mode for the current architecture and places the
@@ -51,10 +59,13 @@ gulp.task('backend', gulp.series((doneFn) => {
  * The production binary difference from development binary is only that it contains all
  * dependencies inside it and is targeted for a specific architecture.
  */
-gulp.task('backend:prod', gulp.series(() => {
-  let outputBinaryPath = path.join(conf.paths.dist, conf.backend.binaryName);
-  return backendProd([[outputBinaryPath, conf.arch.default]]);
-}));
+gulp.task(
+  'backend:prod',
+  gulp.series(() => {
+    let outputBinaryPath = path.join(conf.paths.dist, conf.backend.binaryName);
+    return backendProd([[outputBinaryPath, conf.arch.default]]);
+  }),
+);
 
 /**
  * Compiles backend application in production mode for all architectures and places the
@@ -63,11 +74,15 @@ gulp.task('backend:prod', gulp.series(() => {
  * The production binary difference from development binary is only that it contains all
  * dependencies inside it and is targeted specific architecture.
  */
-gulp.task('backend:prod:cross', gulp.series(() => {
-  let outputBinaryPaths =
-      conf.paths.distCross.map((dir) => path.join(dir, conf.backend.binaryName));
-  return backendProd(lodash.zip(outputBinaryPaths, conf.arch.list));
-}));
+gulp.task(
+  'backend:prod:cross',
+  gulp.series(() => {
+    let outputBinaryPaths = conf.paths.distCross.map(dir =>
+      path.join(dir, conf.backend.binaryName),
+    );
+    return backendProd(lodash.zip(outputBinaryPaths, conf.arch.list));
+  }),
+);
 
 /**
  * @param {!Array<!Array<string>>} outputBinaryPathsAndArchs array of
@@ -78,35 +93,38 @@ function backendProd(outputBinaryPathsAndArchs) {
   let promiseFn = (path, arch) => {
     return (resolve, reject) => {
       goCommand(
-          [
-            'build',
-            '-a',
-            '-installsuffix',
-            'cgo',
-            // record version info into src/version/version.go
-            '-ldflags',
-            conf.recordVersionExpression,
-            '-o',
-            path,
-            conf.backend.mainPackageName,
-          ],
-          (err) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve();
-            }
-          },
-          {
-            // Disable cgo package. Required to run on scratch docker image.
-            CGO_ENABLED: '0',
-            GOARCH: arch,
-          });
+        [
+          'build',
+          '-a',
+          '-installsuffix',
+          'cgo',
+          // record version info into src/version/version.go
+          '-ldflags',
+          conf.recordVersionExpression,
+          '-o',
+          path,
+          conf.backend.mainPackageName,
+        ],
+        err => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
+        },
+        {
+          // Disable cgo package. Required to run on scratch docker image.
+          CGO_ENABLED: '0',
+          GOARCH: arch,
+          GOOS: 'linux',
+        },
+      );
     };
   };
 
   let goCommandPromises = outputBinaryPathsAndArchs.map(
-      (pathAndArch) => new Promise(promiseFn(pathAndArch[0], pathAndArch[1])));
+    pathAndArch => new Promise(promiseFn(pathAndArch[0], pathAndArch[1])),
+  );
 
   return Promise.all(goCommandPromises);
 }

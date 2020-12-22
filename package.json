@@ -19,7 +19,7 @@
     "build:frontend": "npm run clean && ng build --aot --prod --localize --outputPath=$npm_package_config_frontend_build_dir",
     "build:backend": "npm run clean && gulp backend:prod",
     "build:backend:cross": "npm run clean && gulp backend:prod:cross",
-    "docker:build": "npm run clean && npm run build:cross && gulp docker-image:release:cross",
+    "docker:build": "npm run clean && npm run build && gulp docker-image:release:cross",
     "docker:build:head": "npm run clean && npm run build:cross && gulp docker-image:head:cross",
     "docker:push": "npm run docker:build && gulp push-to-docker:release:cross",
     "docker:push:head": "npm run docker:build:head && gulp push-to-docker:head:cross",
@@ -82,7 +82,7 @@
   "xliffmergeOptions": {
     "srcDir": "i18n",
     "genDir": "i18n",
-    "defaultLanguage": "en",
+    "defaultLanguage": "zh-Hans",
     "languages": [
       "de",
       "fr",
@@ -103,7 +103,7 @@
     "@angular/flex-layout": "9.0.0-beta.31",
     "@angular/forms": "9.1.9",
     "@angular/http": "8.0.0-beta.10",
-    "@angular/localize": "9.1.9",
+    "@angular/localize": "^9.1.9",
     "@angular/material": "9.2.4",
     "@angular/platform-browser": "9.1.9",
     "@angular/platform-browser-dynamic": "9.1.9",

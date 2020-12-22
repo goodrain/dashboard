@@ -14,10 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<div fxLayout="column"
-     fxFill
-     fxFlexFill>
-  <mat-toolbar class="kd-toolbar kd-primary-toolbar">
+<div fxLayout="column" fxFill fxFlexFill>
+  <!-- <mat-toolbar class="kd-toolbar kd-primary-toolbar">
     <div class="kd-toolbar-tools"
          fxLayout="row"
          fxFlex="auto">
@@ -49,40 +47,28 @@ limitations under the License.
         <kd-user-panel class="kd-toolbar-action"></kd-user-panel>
       </div>
     </div>
-  </mat-toolbar>
+  </mat-toolbar> -->
 
-  <mat-toolbar class="kd-second-toolbar kd-bg-primary">
-    <div class="kd-toolbar-tools"
-         fxFlex>
+  <mat-toolbar class="kd-second-toolbar">
+    <div class="kd-toolbar-tools" fxFlex>
       <kd-nav-hamburger fxFlex="none"></kd-nav-hamburger>
       <kd-breadcrumbs class="kd-actionbar-breadcrumbs"></kd-breadcrumbs>
       <kd-actionbar fxFlex="end"></kd-actionbar>
     </div>
   </mat-toolbar>
 
-  <mat-toolbar class="kd-system-banner"
-               [ngClass]="getSystemBannerClass()"
-               *ngIf="isSystemBannerVisible()"
-               [innerHTML]="getSystemBannerMessage()">
+  <mat-toolbar class="kd-system-banner" [ngClass]="getSystemBannerClass()" *ngIf="isSystemBannerVisible()"
+    [innerHTML]="getSystemBannerMessage()">
   </mat-toolbar>
 
-  <div fxFlex
-       fxLayout="row"
-       class="kd-chrome-container kd-bg-background">
+  <div fxFlex fxLayout="row" class="kd-chrome-container kd-bg-background">
     <kd-nav></kd-nav>
-    <div [ngSwitch]="loading"
-         fxLayoutAlign="center"
-         fxFlex
-         class="kd-scroll-container">
-      <div *ngSwitchCase="true"
-           fxFlexAlign="center">
-        <mat-spinner mode="indeterminate"
-                     [diameter]="48">
+    <div [ngSwitch]="loading" fxLayoutAlign="center" fxFlex class="kd-scroll-container">
+      <div *ngSwitchCase="true" fxFlexAlign="center">
+        <mat-spinner mode="indeterminate" [diameter]="48">
         </mat-spinner>
       </div>
-      <div *ngSwitchCase="false"
-           fxFlex
-           class="kd-scroll-container">
+      <div *ngSwitchCase="false" fxFlex class="kd-scroll-container">
         <router-outlet></router-outlet>
       </div>
     </div>
